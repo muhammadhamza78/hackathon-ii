@@ -1,0 +1,99 @@
+{
+  "endpoint": "PUT /api/tasks/{task_id}",
+  "description": "Update an existing task (only if owned by authenticated user)",
+  "authentication": "Required (JWT)",
+  "request": {
+    "headers": {
+      "Authorization": "Bearer <JWT_TOKEN>",
+      "Content-Type": "application/json"
+    },
+    "path_parameters": {
+      "task_id": {
+        "type": "integer",
+        "required": true,
+        "description": "Task ID"
+      }
+    },
+    "body": {
+      "title": {
+        "type": "string",
+        "required": false,
+        "min_length": 1,
+        "max_length": 200,
+        "description": "Task title (optional, partial update)"
+      },
+      "description": {
+        "type": "string | null",
+        "required": false,
+        "max_length": 2000,
+        "description": "Task description (optional, partial update)"
+      },
+      "status": {
+        "type": "enum",
+        "required": false,
+        "values": ["pending", "in_progress", "completed"],
+        "description": "Task status (optional, partial update)"
+      }
+    },
+    "example": {
+      "title": "Buy groceries and cook dinner",
+      "description": "Milk, eggs, bread, chicken",
+      "status": "in_progress"
+    },
+    "note": "All fields are optional. Only provided fields will be updated."
+  },
+  "responses": {
+    "200": {
+      "description": "Task updated successfully",
+      "body": {
+        "id": {"type": "integer"},
+        "title": {"type": "string"},
+        "description": {"type": "string | null"},
+        "status": {"type": "enum", "values": ["pending", "in_progress", "completed"]},
+        "user_id": {"type": "integer"},
+        "created_at": {"type": "string", "format": "ISO 8601", "note": "NOT changed"},
+        "updated_at": {"type": "string", "format": "ISO 8601", "note": "Automatically updated"}
+      },
+      "example": {
+        "id": 123,
+        "title": "Buy groceries and cook dinner",
+        "description": "Milk, eggs, bread, chicken",
+        "status": "in_progress",
+        "user_id": 456,
+        "created_at": "2025-12-30T10:00:00Z",
+        "updated_at": "2025-12-30T12:00:00Z"
+      }
+    },
+    "401": {
+      "description": "Unauthorized - Missing or invalid JWT token",
+      "body": {"detail": "Unauthorized"},
+      "example": {"detail": "Unauthorized"}
+    },
+    "404": {
+      "description": "Task not found OR task exists but belongs to different user",
+      "body": {"detail": "Task not found"},
+      "example": {"detail": "Task not found"}
+    },
+    "422": {
+      "description": "Validation Error - Invalid request data",
+      "body": {
+        "detail": [{"loc": ["body", "title"], "msg": "ensure this value has at most 200 characters", "type": "value_error"}]
+      },
+      "example": {
+        "detail": [{"loc": ["body", "status"], "msg": "value is not a valid enumeration member", "type": "type_error.enum"}]
+      }
+    }
+  },
+  "business_logic": [
+    "Extract user_id from JWT token",
+    "Validate request body (partial validation)",
+    "Query database for task WHERE id = task_id AND user_id = authenticated_user_id",
+    "If not found, return 404",
+    "Update only provided fields",
+    "Auto-update updated_at to current timestamp",
+    "Save to database",
+    "Return updated task with 200"
+  ],
+  "user_isolation": "Returns 404 if task belongs to different user (update is NOT applied)",
+  "immutability": "created_at is never updated, user_id cannot be changed"
+}

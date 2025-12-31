@@ -1,0 +1,395 @@
+# Spec-Kit Configuration for Hackathon-II Phase-2
+# Task Management System
+
+version: 1.0.0
+project_name: "Hackathon-II Phase-2 Task Management System"
+created: 2025-12-30
+last_updated: 2025-12-30
+
+# Project Metadata
+metadata:
+  description: "Full-stack task management system with secure authentication and user data isolation"
+  repository: "hackathon-ii/phase-2"
+  team: "AI Agent Development Team"
+  status: "specification"
+
+# Technology Stack
+technology:
+  frontend:
+    framework: "Next.js"
+    version: "16+"
+    pattern: "App Router"
+    language: "TypeScript"
+    styling: "TailwindCSS (recommended) or CSS Modules"
+    state_management: "React Context + Server Components"
+    http_client: "fetch API or axios"
+
+  backend:
+    framework: "FastAPI"
+    language: "Python"
+    version: "3.11+"
+    orm: "SQLModel"
+    validation: "Pydantic"
+    auth: "Better Auth (JWT)"
+    asgi_server: "Uvicorn"
+
+  database:
+    provider: "Neon Serverless PostgreSQL"
+    orm: "SQLModel"
+    migrations: "Alembic"
+
+  development:
+    version_control: "Git"
+    testing_backend: "pytest"
+    testing_frontend: "Vitest or Jest"
+    linting_python: "ruff"
+    linting_typescript: "ESLint"
+    formatting_python: "black"
+    formatting_typescript: "Prettier"
+
+# Specification Structure
+specification:
+  root_dir: "specs"
+
+  directories:
+    overview: "specs"
+    architecture: "specs"
+    features: "specs/features"
+    api: "specs/api"
+    database: "specs/database"
+    ui: "specs/ui"
+
+  files:
+    # Core specifications
+    - path: "specs/overview.md"
+      description: "Project overview and high-level requirements"
+      status: "complete"
+
+    - path: "specs/architecture.md"
+      description: "System architecture and design decisions"
+      status: "complete"
+
+    # Feature specifications
+    - path: "specs/features/authentication.md"
+      feature_id: "F001"
+      description: "User authentication with JWT"
+      dependencies: []
+      status: "complete"
+
+    - path: "specs/features/task-crud.md"
+      feature_id: "F002"
+      description: "Task CRUD operations with user isolation"
+      dependencies: ["F001"]
+      status: "complete"
+
+    # API specifications
+    - path: "specs/api/rest-endpoints.md"
+      description: "Complete REST API endpoint definitions"
+      status: "complete"
+
+    # Database specifications
+    - path: "specs/database/schema.md"
+      description: "Database schema for users and tasks"
+      status: "complete"
+
+    # UI specifications
+    - path: "specs/ui/pages.md"
+      description: "All page specifications (routes, layouts, behavior)"
+      status: "complete"
+
+    - path: "specs/ui/components.md"
+      description: "Reusable UI component specifications"
+      status: "complete"
+
+# Development Workflow
+workflow:
+  methodology: "Spec-Driven Development (SDD)"
+
+  phases:
+    - name: "Specification"
+      description: "Define all specifications for features, API, database, UI"
+      commands:
+        - "/sp.specify"
+        - "/sp.constitution"
+      artifacts:
+        - "specs/**/*.md"
+        - ".specify/memory/constitution.md"
+
+    - name: "Planning"
+      description: "Design system architecture and create implementation plan"
+      commands:
+        - "/sp.plan"
+      artifacts:
+        - "specs/**/plan.md"
+        - "history/adr/*.md"
+
+    - name: "Task Generation"
+      description: "Break down into atomic, testable tasks"
+      commands:
+        - "/sp.tasks"
+      artifacts:
+        - "specs/**/tasks.md"
+
+    - name: "Implementation"
+      description: "Execute tasks following TDD principles"
+      commands:
+        - "/sp.implement"
+      artifacts:
+        - "frontend/**/*"
+        - "backend/**/*"
+        - "tests/**/*"
+
+    - name: "Testing & Validation"
+      description: "End-to-end testing and validation"
+      artifacts:
+        - "test reports"
+        - "coverage reports"
+
+# Quality Gates
+quality_gates:
+  spec_completeness:
+    - "All functional requirements defined"
+    - "All API contracts specified"
+    - "All database schemas defined"
+    - "All UI pages and components specified"
+    - "No conflicts or ambiguities"
+
+  architecture_review:
+    - "Key decisions documented"
+    - "ADRs created for significant decisions"
+    - "Trade-offs analyzed"
+    - "NFRs (performance, security) defined"
+
+  implementation_ready:
+    - "All specs reviewed and approved"
+    - "Plan created and approved"
+    - "Tasks generated and prioritized"
+    - "Dependencies identified"
+
+  code_quality:
+    - "Type safety enforced (TypeScript strict, Pydantic validation)"
+    - "User isolation tested and verified"
+    - "All tests passing"
+    - "Code review completed"
+    - "Security audit passed"
+
+# Constitution Principles (from .specify/memory/constitution.md)
+principles:
+  - id: "P1"
+    name: "Spec-First Development"
+    priority: "NON-NEGOTIABLE"
+    description: "All work MUST be done via Spec-Driven Development. No manual coding before specs."
+
+  - id: "P2"
+    name: "JWT Authentication Mandatory"
+    priority: "NON-NEGOTIABLE"
+    description: "All API endpoints MUST require valid JWT authentication (except auth endpoints)."
+
+  - id: "P3"
+    name: "User Data Isolation"
+    priority: "NON-NEGOTIABLE"
+    description: "Every user MUST only access their own data. Cross-user access is prohibited."
+
+  - id: "P4"
+    name: "API-First Architecture"
+    priority: "HIGH"
+    description: "Backend and frontend developed independently with contract-first approach."
+
+  - id: "P5"
+    name: "Type Safety"
+    priority: "HIGH"
+    description: "Strong typing enforced on both frontend (TypeScript) and backend (SQLModel/Pydantic)."
+
+  - id: "P6"
+    name: "Test Coverage"
+    priority: "HIGH"
+    description: "Critical paths MUST have automated test coverage (>80% on auth, CRUD, isolation)."
+
+# Features
+features:
+  - id: "F001"
+    name: "User Authentication"
+    description: "JWT-based authentication with registration and login"
+    status: "specified"
+    priority: "P0"
+    dependencies: []
+    spec_file: "specs/features/authentication.md"
+
+  - id: "F002"
+    name: "Task CRUD Operations"
+    description: "Create, read, update, delete tasks with user isolation"
+    status: "specified"
+    priority: "P0"
+    dependencies: ["F001"]
+    spec_file: "specs/features/task-crud.md"
+
+# Non-Functional Requirements
+nfr:
+  performance:
+    api_response_time_p95: "500ms"
+    database_query_time_p95: "100ms"
+    frontend_page_load_p95: "2s"
+
+  security:
+    authentication: "JWT with HS256"
+    password_hashing: "bcrypt (cost 12) or argon2"
+    user_isolation: "enforced at query level"
+    sql_injection: "prevented by ORM (SQLModel)"
+
+  scalability:
+    database_connections: "10 (Neon free tier)"
+    concurrent_users: "100+ (MVP target)"
+
+  reliability:
+    availability: "99% uptime (MVP)"
+    error_rate: "<1% of requests"
+
+# Project Structure
+project_structure:
+  frontend:
+    path: "frontend/"
+    subdirs:
+      - "app/             # Next.js App Router pages"
+      - "components/      # React components"
+      - "lib/            # Utilities and API client"
+      - "types/          # TypeScript type definitions"
+
+  backend:
+    path: "backend/"
+    subdirs:
+      - "app/api/        # API routes"
+      - "app/models/     # SQLModel data models"
+      - "app/schemas/    # Pydantic request/response schemas"
+      - "app/auth/       # Authentication logic"
+      - "app/db/         # Database connection and session"
+      - "app/main.py     # FastAPI app entry"
+      - "tests/          # Backend tests"
+
+  specs:
+    path: "specs/"
+    subdirs:
+      - "features/       # Feature specifications"
+      - "api/            # API specifications"
+      - "database/       # Database specifications"
+      - "ui/             # UI specifications"
+
+  config:
+    path: ".spec-kit/"
+    files:
+      - "config.yaml     # This file"
+
+# Environment Configuration
+environment:
+  development:
+    frontend_url: "http://localhost:3000"
+    backend_url: "http://localhost:8000"
+    database_url: "postgresql://user:pass@localhost/dev_db"
+
+  production:
+    frontend_url: "TBD"
+    backend_url: "TBD"
+    database_url: "TBD (Neon connection string)"
+
+# Documentation
+documentation:
+  api:
+    format: "OpenAPI 3.0"
+    url: "http://localhost:8000/docs"
+    redoc_url: "http://localhost:8000/redoc"
+    json_url: "http://localhost:8000/openapi.json"
+
+  adr:
+    directory: "history/adr/"
+    pending:
+      - "ADR-001: API-First Architecture"
+      - "ADR-002: JWT-Based Authentication"
+      - "ADR-003: SQLModel for ORM"
+      - "ADR-004: User Data Isolation at Query Level"
+      - "ADR-005: Next.js App Router"
+
+  phr:
+    directory: "history/prompts/"
+    subdirs:
+      - "constitution/"
+      - "general/"
+      - "feature-name/"
+
+# Success Criteria
+success_criteria:
+  functional_completeness:
+    - "All FR1-FR4 requirements implemented and tested"
+
+  security:
+    - "100% pass rate on user isolation tests"
+    - "No critical security vulnerabilities"
+
+  type_safety:
+    - "Zero type errors in production build"
+
+  test_coverage:
+    - ">80% coverage on critical paths (auth, CRUD, isolation)"
+
+  documentation:
+    - "Complete API documentation (OpenAPI)"
+    - "Deployment guide"
+    - "README with setup instructions"
+
+  spec_compliance:
+    - "Implementation matches specifications exactly"
+
+# Out of Scope (MVP)
+out_of_scope:
+  - "Email verification or password reset"
+  - "Social authentication (OAuth providers)"
+  - "Task sharing or collaboration features"
+  - "Real-time updates (WebSockets)"
+  - "Task attachments or file uploads"
+  - "Task categories, tags, or labels"
+  - "Task search or filtering (beyond basic list)"
+  - "Admin panel or user management"
+  - "Analytics or reporting"
+  - "Mobile native apps"
+  - "Internationalization (i18n)"
+
+# Risks
+risks:
+  - id: "R1"
+    description: "Better Auth integration with FastAPI may have undocumented edge cases"
+    mitigation: "Use well-documented JWT libraries as fallback (python-jose, PyJWT)"
+    priority: "medium"
+
+  - id: "R2"
+    description: "Missing edge cases in user isolation could lead to data leaks"
+    mitigation: "Comprehensive multi-user test scenarios, security audit checklist"
+    priority: "critical"
+
+  - id: "R3"
+    description: "Next.js 16+ may have instability (bleeding-edge version)"
+    mitigation: "Pin to specific stable release, avoid experimental features"
+    priority: "low"
+
+  - id: "R4"
+    description: "Neon PostgreSQL cold starts or connection limits"
+    mitigation: "Use connection pooling, implement retry logic"
+    priority: "medium"
+
+# References
+references:
+  constitution: ".specify/memory/constitution.md"
+  claude_guide: "CLAUDE.md"
+  templates:
+    - ".specify/templates/spec-template.md"
+    - ".specify/templates/plan-template.md"
+    - ".specify/templates/phr-template.prompt.md"
+    - ".specify/templates/adr-template.md"
+
+# Approval
+approval:
+  specification_author: "AI Agent"
+  review_date: "Pending"
+  approval_status: "Pending User Review"
+  next_steps:
+    - "Review all specifications for completeness"
+    - "Validate no conflicts or missing requirements"
+    - "Approve specifications before planning phase"
+    - "Run /sp.plan to create implementation plan"
